@@ -1,6 +1,5 @@
 import linecache
 import os
-import subprocess
 from typing import Dict, List, NamedTuple
 
 import numpy as np
@@ -9,6 +8,12 @@ from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import Dataset
 from transformers import BatchEncoding, PreTrainedTokenizer
 from transformers.trainer_utils import PredictionOutput
+
+
+def count_lines(file_path: str) -> int:
+    """Platform-agnostic line counting."""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return sum(1 for _ in f)
 
 
 class TaskSettings(NamedTuple):
@@ -41,7 +46,7 @@ class LineByLineTextDataset(Dataset):
         
         self.prefix: str = prefix
         self._file_path: str = file_path
-        self._len: int = int(subprocess.check_output("wc -l " + file_path, shell=True).split()[0])
+        self._len: int = count_lines(file_path)
         self.tokenizer: PreTrainedTokenizer = tokenizer
         self.max_length: int = block_size
         
@@ -78,8 +83,8 @@ class TaskPrefixDataset(Dataset):
         self.prefix: str = prefix
         self._source_path: str = os.path.join(data_dir, type_path + ".source")
         self._target_path: str = os.path.join(data_dir, type_path + ".target")
-        self._len_source: int = int(subprocess.check_output("wc -l " + self._source_path, shell=True).split()[0])
-        self._len_target: int = int(subprocess.check_output("wc -l " + self._target_path, shell=True).split()[0])
+        self._len_source: int = count_lines(self._source_path)
+        self._len_target: int = count_lines(self._target_path)
         assert self._len_source == self._len_target, "Source file and target file don't match!"
         self.tokenizer: PreTrainedTokenizer = tokenizer
         self.max_source_len: int = max_source_length
