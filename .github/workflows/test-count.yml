@@ -11,12 +11,7 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         python-version: ['3.10']
 
-    steps:
-    - name: Checkout specific commit
-      uses: actions/checkout@v4
-      with:
-        ref: 5f7972d8b366572013a9f3a4808de9a9b633b5b1
-        
+    steps:    
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
