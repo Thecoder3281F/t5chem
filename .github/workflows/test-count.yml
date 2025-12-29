@@ -15,7 +15,7 @@ jobs:
     - name: Checkout specific commit
       uses: actions/checkout@v4
       with:
-        ref: f8a29514b5690a8d244a44698bbd730c4418688f
+        ref: 5f7972d8b366572013a9f3a4808de9a9b633b5b1
         
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
