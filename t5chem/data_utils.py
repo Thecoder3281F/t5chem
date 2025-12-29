@@ -79,7 +79,7 @@ class LineByLineTextDataset(Dataset):
         
         self.prefix: str = prefix
         self._file_path: str = file_path
-        self._len: int = count_lines(self._file_path)
+        self._len: int = count_lines(file_path)
         self.tokenizer: PreTrainedTokenizer = tokenizer
         self.max_length: int = block_size
         
