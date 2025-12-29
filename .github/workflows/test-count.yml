@@ -1,4 +1,4 @@
-name: Test Specific Commit
+name: Test Line Count
 
 on:
   workflow_dispatch:
