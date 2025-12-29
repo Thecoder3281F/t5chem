@@ -36,7 +36,15 @@ def python_chunked_count(path: str, bufsize: int = 1024 * 1024) -> int:
 
 def count_lines(file_path: str) -> int:
     try:
-        return int(subprocess.check_output("wc -l " + file_path, shell=True).split()[0])
+        wc_count = int(subprocess.check_output("wc -l " + file_path, shell=True).split()[0])
+        # wc -l counts newlines, not lines.  If file doesn't end with \n, add 1
+        with open(file_path, 'rb') as f:
+            f.seek(0, 2)  # Seek to end
+            if f.tell() > 0:  # Non-empty file
+                f.seek(-1, 2)  # Go to last byte
+                if f.read(1) != b'\n':
+                    wc_count += 1
+        return wc_count
     except Exception:
         return python_chunked_count(file_path)
 
