@@ -26,6 +26,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pytest numpy torch transformers scikit-learn scipy rdkit
+        pip install -e .
 
     - name: Run tests
       run: |
