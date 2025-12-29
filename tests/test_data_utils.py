@@ -1,7 +1,7 @@
 import os
 import tempfile
 import pytest
-from t5chem.data_utils import count_lines, python_chunked_count
+from data_utils import count_lines, python_chunked_count
 
 
 class TestPythonChunkedCount:
