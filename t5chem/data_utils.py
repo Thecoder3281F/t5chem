@@ -1,5 +1,6 @@
 import linecache
 import os
+import subprocess
 from typing import Dict, List, NamedTuple
 
 import numpy as np
@@ -9,11 +10,35 @@ from torch.utils.data import Dataset
 from transformers import BatchEncoding, PreTrainedTokenizer
 from transformers.trainer_utils import PredictionOutput
 
+def python_chunked_count(path: str, bufsize: int = 1024 * 1024) -> int:
+    """
+    Read file in binary chunks and count b'\n'.
+
+    Adds one if the file is non-empty and the last byte isn't a newline.
+    """
+    total = 0
+    last_byte_newline = False
+    file_empty = True
+    with open(path, 'rb') as f:
+        while True:
+            chunk = f.read(bufsize)
+            if not chunk:
+                break
+            file_empty = False
+            total += chunk.count(b'\n')
+            last_byte_newline = chunk.endswith(b'\n')
+    if file_empty:
+        return 0
+    # If last byte not newline, there's one more line (than what python counts)
+    if not last_byte_newline:
+        total += 1
+    return total
 
 def count_lines(file_path: str) -> int:
-    """Platform-agnostic line counting."""
-    with open(file_path, 'r', encoding='utf-8') as f:
-        return sum(1 for _ in f)
+    try:
+        return int(subprocess.check_output("wc -l " + file_path, shell=True).split()[0])
+    except Exception:
+        return python_chunked_count(file_path)
 
 
 class TaskSettings(NamedTuple):
